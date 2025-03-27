@@ -6,5 +6,7 @@ import lanchon.dexpatcher.annotation.DexAdd;
 public class Haruka {
 	@DexAdd
 	public static final String TAG = "Haruka";
+	@DexAdd
+	public static final String VERSION = "0.1";
 
 }
