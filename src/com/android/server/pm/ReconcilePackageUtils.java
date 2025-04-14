@@ -24,7 +24,7 @@ final class ReconcilePackageUtils {
 
 
 	/* 
-	 * This function is responsible of verifying packages signatures during boot.
+	 * This function is responsible for verifying packages signatures during boot.
 	 * Since that when system packages fail verification, the device bootloops,
 	 * we wrap the function to allow to spoofing packages that require the
 	 * platform key to have the right signature before the actual verification happens.
@@ -57,7 +57,7 @@ final class ReconcilePackageUtils {
 		
 		if (platformPackage == null) {
 			// We weren't able to get the platform key programmatically, so we avoid spoofing
-			return reconcilePackages(newInstallRequests, allPackages, versionInfos, sharedLibraries, ksms, settings);
+			return reconcilePackages(installRequests, allPackages, versionInfos, sharedLibraries, ksms, settings);
 		}
 
 		for (InstallRequest installRequest : installRequests) {
