@@ -21,7 +21,8 @@ final class ReconcilePackageUtils {
 	final static String PLATFORM_PACKAGE_NAME = "android";
 	@DexAdd
 	final static String PLATFORM_PACKAGE_SPOOF_PERMISSION = "android.permission.SPOOF_PLATFORM_SIGNATURE";
-
+	@DexAdd
+	private static AndroidPackage platformPackage = null;
 
 	/* 
 	 * This function is responsible for verifying packages signatures during boot.
@@ -46,14 +47,8 @@ final class ReconcilePackageUtils {
     {
 		final List<InstallRequest> newInstallRequests = new ArrayList<>(installRequests.size());
 		
-		ParsedPackage platformPackage = null;
-		
-		for (InstallRequest installRequest : installRequests) {
-			if (installRequest.getParsedPackage().getPackageName() == PLATFORM_PACKAGE_NAME) {
-				platformPackage = installRequest.getParsedPackage();
-				break;
-			}
-		}
+
+		platformPackage = allPackages.get(PLATFORM_PACKAGE_NAME);
 		
 		if (platformPackage == null) {
 			// We weren't able to get the platform key programmatically, so we avoid spoofing
