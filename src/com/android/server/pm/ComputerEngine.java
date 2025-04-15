@@ -49,6 +49,11 @@ public class ComputerEngine {
 	 * */
 	@DexAdd
 	private boolean hasSignatureSpoofing(AndroidPackage ap, PackageInfo pi) {
+		// This is important, or android will crash during boot
+		if (pi.requestedPermissions == null || pi.requestedPermissionsFlags == null) {
+			return false;
+		}
+		
 		// There is surely a better way to check if the permission is present before hand
 		boolean hasPermission = false;
 		for (int i = 0; i < pi.requestedPermissions.length; i++) {
