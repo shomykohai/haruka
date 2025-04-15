@@ -34,6 +34,10 @@ public class ComputerEngine {
 	@DexWrap
 	public final PackageInfo generatePackageInfo(PackageStateInternal ps, long flags, int userId) {
 		PackageInfo pi = generatePackageInfo(ps, flags, userId);
+		
+		// This is a necessary base case, and also saves us some resources
+		if (pi == null || ps == null) return pi;
+		
 		AndroidPackage pp = ps.getPkg();
 
 		if (pp != null && hasSignatureSpoofing(pp, pi)) {
