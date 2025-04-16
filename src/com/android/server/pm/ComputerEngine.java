@@ -33,7 +33,7 @@ public class ComputerEngine {
 	 * */
 	@DexWrap
 	public final PackageInfo generatePackageInfo(PackageStateInternal ps, long flags, int userId) {
-		PackageInfo pi = generatePackageInfo(ps, flags, userId);
+		PackageInfo pi = generatePackageInfo(ps, flags | PackageManager.GET_PERMISSIONS, userId);
 		
 		// This is a necessary base case, and also saves us some resources
 		if (pi == null || ps == null) return pi;
@@ -42,6 +42,23 @@ public class ComputerEngine {
 
 		if (pp != null && hasSignatureSpoofing(pp, pi)) {
 			pi = spoofSignature(pi, pp, flags);
+		}
+		
+		
+		/*
+		 * NOTE: Why this code?
+		 * This step is really important!
+		 * Above, we used generatePackageInfo to force get the permissions from the package,
+		 * since we check them in `hasSignatureSpoofing`.
+		 * If we don't force them back, there might be an unexpected issue, such as an app
+		 * verifying back the flags.
+		 * 
+		 * This is taken from haystack, but it took me a while to figure out why it was there.
+		 */
+		if ((flags & PackageManager.GET_PERMISSIONS) == 0) {
+			pi.permissions = null;
+			pi.requestedPermissions = null;
+			pi.requestedPermissionsFlags = null;
 		}
 		
 		return pi;
@@ -55,6 +72,7 @@ public class ComputerEngine {
 	private boolean hasSignatureSpoofing(AndroidPackage ap, PackageInfo pi) {
 		// This is important, or android will crash during boot
 		if (pi.requestedPermissions == null || pi.requestedPermissionsFlags == null) {
+			Log.i(Haruka.TAG, "Package " + pi.packageName + " permissions are null");
 			return false;
 		}
 		
@@ -69,8 +87,11 @@ public class ComputerEngine {
 		
 		// We don't log anything for packages without permissions.
 		// The for loop above and this check if basically to avoid spamming the logs for every package
-		if (!hasPermission) return false;
+		if (!hasPermission) {
+			Log.i(Haruka.TAG, "Package " + pi.packageName + " doesn't have permission declared");
+			return false;
 		
+		}
 		// Just to make people life easier while debugging, we log eventual missing stuff
 		if (ap.getMetaData() == null) {
 			Log.w(Haruka.TAG, "Cannot get metadata for package " + ap.getPackageName() + " (metadata == null)");
@@ -126,8 +147,8 @@ public class ComputerEngine {
 	 * */
 	@DexAdd
 	private PackageInfo spoofSignature(PackageInfo pi, AndroidPackage pp, long flags) {
-		if ( (flags & PackageManager.GET_SIGNATURES) == 0) {
-			Log.w(Haruka.TAG, "Cannot get signatures for package " + pi.packageName);
+		if ( (flags & PackageManager.GET_SIGNATURES) == 0 || (flags & PackageManager.GET_SIGNING_CERTIFICATES) == 0) {
+			// The app didn't request package signature, thus the fields have to be null
 			return pi;
 		}
 		
@@ -145,9 +166,9 @@ public class ComputerEngine {
 		 * Here we spoof both the classic signatures and the new SigningDetails fields, to allow compatibility
 		 * between old and new apps (microg as an example for the latter, and Lanchon's Signature Spoofing checker for the first)
 		 * */
-		pi.signatures = new Signature[] { new Signature(fakeSignature) };
 		
 		try {
+			pi.signatures = new Signature[] { new Signature(fakeSignature) };
 			pi.signingInfo = new SigningInfo(
 				new SigningDetails(
 						pi.signatures,
@@ -156,13 +177,13 @@ public class ComputerEngine {
 						null
 						)
 				);
+			Log.i(Haruka.TAG, "Spoofed signature for package " + pi.packageName);
 		}
 		catch (CertificateException ce) {
 			Log.e(Haruka.TAG, "There was an error while generating SigningInfo for package " + pi.packageName + ", only spoofed legacy signatures.", ce);
 		}
 		
 		
-		Log.i(Haruka.TAG, "Spoofed signature for package " + pi.packageName);
 		
 		return pi;
 	}
