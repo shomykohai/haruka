@@ -3,3 +3,6 @@
 .classpath
 /.settings
 /src/lanchon/dexpatcher/annotation
+/out
+/build
+android.jar
