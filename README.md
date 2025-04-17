@@ -13,10 +13,17 @@ Get the files you need from your ROM (for now only patches for services.jar are 
 Then run 
 ```
 mkdir generated_dex
-java -jar dexpatcher-1.8.0-beta1.jar --multi-dex-threaded --api-level 34 --verbose --debug --output generated_dex services.jar haruka_0.1.dex
+# This will only apply the signature spoof patch. For full haruka patches, use haruka_0.2.dex
+java -jar dexpatcher-1.8.0-beta1.jar --multi-dex-threaded --api-level 34 --verbose --debug --output generated_dex services.jar haruka_0.2_only_sig_spoof.dex
 ```
 
 After dexpatcher generated the new patched dexes, open services.jar with an archive program (such as 7zip or WinRar), remove all old `.dex` files from it and put the newly generated one inside.
+Or use the `patch_services.sh` script like this
+```sh
+# If not present, create a directory called build and put haruka dex file in there as "haruka.dex"
+./patch_services.sh path/to/stock_services.jar
+```
+And you'll find the patched services.jar inside the build directory.
 
 Now, choose which steps you need to do based on what you'll need the patch for:
 * [Building a ROM I will later flash](#building-a-rom-i-will-later-flash)
