@@ -15,8 +15,8 @@
   {
     devShells.${system}.default = pkgs.mkShell {
       packages = [
-        nixpkgs.dex2jar
-        jdk8
+        pkgs.dex2jar
+        pkgs.jdk8
         frostix.dexpatcher
       ];
     };
