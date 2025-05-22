@@ -5,11 +5,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1744733187,
-        "narHash": "sha256-0pe1mcuAQOl1LiM4MKRjYosbD3JomAmUmJzqeb9K5NU=",
+        "lastModified": 1747752428,
+        "narHash": "sha256-sOwvfj+vyVM52D5lgjjryHGS+GXbeduon9Q6F07QJ6E=",
         "owner": "shomykohai",
         "repo": "frostix",
-        "rev": "25a3227b30415e1be3800e38b9935c1dad31988b",
+        "rev": "2422208444d561594ec19512a9aaf1636b165e7e",
         "type": "github"
       },
       "original": {
