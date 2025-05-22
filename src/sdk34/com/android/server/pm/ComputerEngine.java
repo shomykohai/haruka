@@ -1,6 +1,5 @@
 package com.android.server.pm;
 
-import java.security.Signature;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import com.android.server.pm.pkg.PackageStateInternal;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.content.pm.SigningDetails;
 import android.content.pm.SigningInfo;
 import io.github.shomy.haruka.HarukaPackageWrapper;
