@@ -6,17 +6,20 @@
     frostix.url = "github:shomykohai/frostix";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
-  let
+  outputs = {
+    self,
+    nixpkgs,
+    ...
+  } @ inputs: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
     frostix = inputs.frostix.packages.${system};
-  in
-  {
+  in {
     devShells.${system}.default = pkgs.mkShell {
       packages = [
-        pkgs.dex2jar
         pkgs.jdk8
+        pkgs.unzip
+        frostix.dex2jar
         frostix.dexpatcher
       ];
     };
