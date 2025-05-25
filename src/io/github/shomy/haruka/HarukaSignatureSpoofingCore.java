@@ -75,7 +75,7 @@ public class HarukaSignatureSpoofingCore {
         // stuff
         if (hp.getMetaData() == null) {
             // Small check to avoid spamming with NanoDroid org.spoofing apk
-            if (!(hp.getPackageName().equals(NANODROID_SPOOFING)) || !(hp.getPackageName().equals(HARUKA_SPOOFING))) {
+            if (!(hp.getPackageName().equals(NANODROID_SPOOFING)) && !(hp.getPackageName().equals(HARUKA_SPOOFING))) {
                 Log.w(Haruka.TAG, "Cannot get metadata for package " + hp.getPackageName() + " (metadata == null)");
             }
             return false;
