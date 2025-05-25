@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="string" name="app_name" id="0x7f020000" />
+    <public type="string" name="permgroupdesc_fakePackage" id="0x7f020001" />
+    <public type="string" name="permgrouplab_fakePackage" id="0x7f020002" />
+    <public type="string" name="permdesc_fakePackageSignature" id="0x7f020003" />
+    <public type="string" name="permlab_fakePackageSignature" id="0x7f020004" />
+    <public type="drawable" name="perm_group_FakeSignature" id="0x7f030000" />
+</resources>

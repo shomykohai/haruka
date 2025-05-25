@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Haruka Signature Spoofing Dialog</string>
+    <string name="permgrouplab_fakePackage">Signature spoofing</string>
+    <string name="permgroupdesc_fakePackage">spoof package signature</string>
+    <string name="permdesc_fakePackageSignature">Allow apps with this permission to pretend to be a different app. Be careful to what app you assign this permission, as it might allow malicious apps to access the data of the application they\'re pretending to be.</string>
+    <string name="permlab_fakePackageSignature">Spoof package signature</string>
+</resources>
