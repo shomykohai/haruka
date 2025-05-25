@@ -19,6 +19,7 @@
       packages = [
         pkgs.jdk8
         pkgs.unzip
+        pkgs.zip
         frostix.dex2jar
         frostix.dexpatcher
       ];
