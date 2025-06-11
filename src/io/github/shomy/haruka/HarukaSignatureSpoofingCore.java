@@ -1,9 +1,6 @@
 package io.github.shomy.haruka;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.security.PublicKey;
 import java.util.Map;
 
@@ -147,51 +144,30 @@ public class HarukaSignatureSpoofingCore {
         Class<?> signingInfoClass = classMap.get("SigningInfo");
 
         try {
-            // Signature[] signaturesArray = new Signature[] { new Signature(fakeSignature)
-            Object signatureInstance = signatureClass.getConstructor(String.class).newInstance(fakeSignature);
-            Object signaturesArray = Array.newInstance(signatureClass, 1);
+            Object signatureInstance = Reflector.newInstance(signatureClass, fakeSignature);
+            Object signaturesArray = Reflector.newArray(signatureClass, 1);
             Array.set(signaturesArray, 0, signatureInstance);
 
-            // pi.signatures = signaturesArray;
-            Field signaturesField = pi.getClass().getDeclaredField("signatures");
-            signaturesField.setAccessible(true);
-            signaturesField.set(pi, signaturesArray);
+            Reflector.set(pi, "signatures", signaturesArray);
 
-            Class<?> paramTypes = Array.newInstance(signatureClass, 0).getClass();
-            Method toSigningKeys = signingDetailsClass.getDeclaredMethod("toSigningKeys", paramTypes);
+            ArraySet<PublicKey> pubKeys = Reflector.invoke(signingDetailsClass, "toSigningKeys", ArraySet.class,
+                    signaturesArray);
 
-            Object pubKeyObj = toSigningKeys.invoke(null, signaturesArray);
-
-            if (pubKeyObj == null) {
+            if (pubKeys == null) {
                 Log.e(Haruka.TAG, "There was an error while generating SigningInfo for package " + pi.packageName);
                 Log.e(Haruka.TAG, "Only spoofing legacy signatures");
                 return pi;
             }
 
-            ArraySet<PublicKey> pubKeys = ((ArraySet<PublicKey>) pubKeyObj);
-
-            Constructor<?> signingDetailsConstructor = signingDetailsClass.getDeclaredConstructor(
-                    paramTypes, // Signature[]
-                    int.class, // SIGNING_BLOCK_3
-                    pubKeys.getClass(),
-                    paramTypes // Signature[]
-            );
-            signingDetailsConstructor.setAccessible(true);
-
-            Object signingDetailsInstance = signingDetailsConstructor.newInstance(
+            Object signingDetailsInstance = Reflector.newInstance(signingDetailsClass,
                     signaturesArray,
                     3,
                     pubKeys,
                     null);
 
-            Constructor<?> signingInfoConstructor = signingInfoClass.getDeclaredConstructor(signingDetailsClass);
-            signingInfoConstructor.setAccessible(true);
-            Object signingInfoInstance = signingInfoConstructor.newInstance(signingDetailsInstance);
+            Object signingInfoInstance = Reflector.newInstance(signingInfoClass, signingDetailsInstance);
 
-            Field signingInfoField = pi.getClass().getDeclaredField("signingInfo");
-            signingInfoField.setAccessible(true);
-            signingInfoField.set(pi, signingInfoInstance);
-
+            Reflector.set(pi, "signingInfo", signingInfoInstance);
         } catch (Exception e) {
             Log.e(Haruka.TAG, "There was an error while spoofing signature for package " + pi.packageName, e);
 
