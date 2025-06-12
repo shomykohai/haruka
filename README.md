@@ -1,6 +1,6 @@
 ## 遥か (Haruka)
 
-Custom patches for various Android 14 stuff, mostly for `penangf`, with dexpatcher.
+Custom patches for various Android stuff, mostly for `penangf`, powered by dexpatcher.
 
 Current features:
 * Platform Signature spoofing **--** Allows system packages with the `SPOOF_PLATFORM_SIGNATURE` permission to spoof their signature to the platform key (used for patched system apps)
@@ -8,13 +8,26 @@ Current features:
 
 ## Usage
 
+### Magisk Module
+
+**INSTALL**
+
+Get the latest version of the magisk module from the release tab, and flash it through magisk manager. The magisk module will only apply the signature spoofing patch.
+
+
+**MANUALLY BUILD**
+
+Run the `build_module.sh` script to build the module. You will need to have `javac`, `zip` and `d2j-jar2dex` in your PATH.
+
+### Manually patch from host
+
 Get the files you need from your ROM (for now only patches for services.jar are available), and [dexpatcher 1.8.0-beta1](https://github.com/DexPatcher/dexpatcher-tool/releases/tag/v1.8.0-beta1) and put all in the same directory.
 
-Then run 
+Then run the following commands with the correct API (in this case, API 34 is used)
 ```
 mkdir generated_dex
 # This will only apply the signature spoof patch. For full haruka patches, use haruka_0.2.dex
-java -jar dexpatcher-1.8.0-beta1.jar --multi-dex-threaded --api-level 34 --verbose --debug --output generated_dex services.jar haruka_0.2_only_sig_spoof.dex
+java -jar dexpatcher-1.8.0-beta1.jar --multi-dex-threaded --api-level 34 --verbose --debug --output generated_dex services.jar haruka_core.dex haruka_34.dex
 ```
 
 After dexpatcher generated the new patched dexes, open services.jar with an archive program (such as 7zip or WinRar), remove all old `.dex` files from it and put the newly generated one inside.
@@ -79,4 +92,6 @@ chcon "u:object_r:system_file:s0" services.X
 
 ## License
 
-This project is licensed under the Apache 2.0 license. See [LICENSE](LICENSE).
+Haruka source code and patches are licensed under the Apache 2.0 license. See [LICENSE](LICENSE).
+The app sources (under `app`) and magisk module (under `module`) are licensed under the GPLv3 license. See their respective directories for the license.
+
