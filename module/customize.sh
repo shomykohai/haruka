@@ -132,7 +132,7 @@ if [ $BOOTMODE == true ]; then
     DEX2OAT_EXITCODE=$?
     logcat -d -v time | awk -v start="$START_TIME" '$0 > start' | grep -i $DEX2OAT >> /data/adb/haruka.log 2>&1
 
-    if [ $DEX2OAT_EXITCODE -ne 0]; then
+    if [ $DEX2OAT_EXITCODE -ne 0 ]; then
         abort "Failed to optimize dex files"
     fi
 
