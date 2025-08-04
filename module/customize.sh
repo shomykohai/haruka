@@ -81,6 +81,7 @@ if [ $BOOTMODE == true ]; then
         DEX2OAT="dex2oat64"
     else
         DEX2OAT="dex2oat"
+        ARCH="arm"
     fi
 
     if [ ! $IS64BIT ]; then
