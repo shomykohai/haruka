@@ -75,6 +75,14 @@ fi
 if [ $BOOTMODE == true ]; then
     ui_print "Running in Magisk/KSU"
     
+    # Check if dex2oat64 exists
+    # See #2
+    if command -v dex2oat64 >/dev/null 2>&1; then
+        DEX2OAT="dex2oat64"
+    else
+        DEX2OAT="dex2oat"
+    fi
+
     if [ ! $IS64BIT ]; then
         DEX2OAT="dex2oat"
         ARCH="arm"
