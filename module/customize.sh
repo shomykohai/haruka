@@ -127,8 +127,15 @@ if [ $BOOTMODE == true ]; then
 
     ui_print "Optimizing dex files"
     START_TIME=$(date '+%m-%d %H:%M:%S.%3N')
-    "$DEX2OAT" --dex-file=$MODPATH/haruka/services.jar --instruction-set=$ARCH --oat-file="$MODPATH/haruka/patch/services.odex" --dump-timings --dump-stats --dump-pass-timings --abort-on-hard-verifier-error --abort-on-soft-verifier-error || abort "Failed to optimize dex files"
+    "$DEX2OAT" --dex-file=$MODPATH/haruka/services.jar --instruction-set=$ARCH --oat-file="$MODPATH/haruka/patch/services.odex" --dump-timings --dump-stats --dump-pass-timings --abort-on-hard-verifier-error --abort-on-soft-verifier-error
+
+    DEX2OAT_EXITCODE=$?
     logcat -d -v time | awk -v start="$START_TIME" '$0 > start' | grep -i $DEX2OAT >> /data/adb/haruka.log 2>&1
+
+    if [ $DEX2OAT_EXITCODE -ne 0]; then
+        abort "Failed to optimize dex files"
+    fi
+
 
     ui_print "Done optimizing dex files"
 
