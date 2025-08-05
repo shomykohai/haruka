@@ -150,20 +150,9 @@ public class HarukaSignatureSpoofingCore {
 
             Reflector.set(pi, "signatures", signaturesArray);
 
-            ArraySet<PublicKey> pubKeys = Reflector.invoke(signingDetailsClass, "toSigningKeys", ArraySet.class,
-                    signaturesArray);
-
-            if (pubKeys == null) {
-                Log.e(Haruka.TAG, "There was an error while generating SigningInfo for package " + pi.packageName);
-                Log.e(Haruka.TAG, "Only spoofing legacy signatures");
-                return pi;
-            }
-
             Object signingDetailsInstance = Reflector.newInstance(signingDetailsClass,
                     signaturesArray,
-                    3,
-                    pubKeys,
-                    null);
+                    (int) 3);
 
             Object signingInfoInstance = Reflector.newInstance(signingInfoClass, signingDetailsInstance);
 
