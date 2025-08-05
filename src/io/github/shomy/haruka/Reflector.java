@@ -264,8 +264,16 @@ public class Reflector {
     private static boolean matchParams(Class<?>[] paramTypes, Object[] args) {
         if (paramTypes.length != args.length) return false;
         for (int i = 0; i < args.length; i++) {
-            if (args[i] != null && !paramTypes[i].isAssignableFrom(args[i].getClass()))
+            if (args[i] == null) {
+                // A primitive type cannot be null, so return false if we don't wanna make
+                // Android mad!!
+                if (paramTypes[i].isPrimitive()) {
+                    return false;
+                }
+            }
+            else if (!isAssignable(paramTypes[i], args[i].getClass())) {
                 return false;
+            }
         }
         return true;
     }
@@ -287,6 +295,31 @@ public class Reflector {
             throw new ClassCastException(TAG + ": Instance is not of type " + clazz.getName());
         }
         return (T) this.instance;
+    }
+
+    /*
+     * Checks whether a parameter type can be assigned from an argument type.
+     * Handles primitives types to avoid collisions in constructors.
+     * 
+     * @param paramType The class type of the parameter.
+     * @param argType The class type of the argument.
+     * @return true if the parameter type can be assigned from the argument type, false otherwise.
+     */
+    private static boolean isAssignable(Class<?> paramType, Class<?> argType) {
+        if (paramType.isAssignableFrom(argType)) {
+            return true;
+        }
+        if (paramType.isPrimitive()) {
+            if (paramType == boolean.class && argType == Boolean.class) return true;
+            if (paramType == byte.class && argType == Byte.class) return true;
+            if (paramType == short.class && argType == Short.class) return true;
+            if (paramType == int.class && argType == Integer.class) return true;
+            if (paramType == long.class && argType == Long.class) return true;
+            if (paramType == float.class && argType == Float.class) return true;
+            if (paramType == double.class && argType == Double.class) return true;
+            if (paramType == char.class && argType == Character.class) return true;
+        }
+        return false;
     }
 
     /*
